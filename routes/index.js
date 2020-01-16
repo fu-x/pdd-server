@@ -1,6 +1,9 @@
 const express = require('express');
 const conn = require('../db/db');
 const router = express.Router();
+const svgCaptcha = require('svg-captcha');
+
+let userCode = []; // 存储用户手机验证码
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -50,7 +53,27 @@ router.get('/api/recommendshoplist', (req, res)=>{
       res.json({success_code: 200, message: results});
     },1000)
   })
-  // const data = require('./../data/search');
-  // res.json({success_code: 200, message: data});
 });
+/*
+获取图形验证码
+*/
+router.get('/api/captcha', (req, res)=>{
+  let captcha = svgCaptcha.create({
+    size: 4,
+    noise: 2,
+    color: true,
+  });
+  req.session.captcha = captcha.text.toLowerCase();
+  res.type('svg');
+  res.status(200).send(captcha.data);
+})
+/*
+生成手机登录验证码并返回
+*/
+router.get('/api/usercode', (req, res)=>{ 
+  let code = Math.random().toFixed(6).slice(-6);
+  let phone = req.phone;
+  userCode[phone] = code;
+  res.json({success_code: 200, message:code});
+})
 module.exports = router;
