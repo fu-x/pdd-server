@@ -27,7 +27,7 @@ npm start
 
 ## 配置接口
 | api | 请求方式 | 参数 | 说明 |
-| :-: | :-: | :-: | :-: | :-: |
+| :----: | :----: | :----: | :----: | :----: |
 | /api/homecasual | get |  | 首页轮播图数据 | 
 | /api/homenav | get |  | 首页导航数据 |
 | /api/homeshoplist | get |  | 首页商品列表数据 |
