@@ -6,6 +6,7 @@ const logger = require('morgan');
 const session = require('express-session')
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const bodyParser = require('body-parser')   
 
 const app = express();
 
@@ -19,13 +20,22 @@ app.all('*', function(req, res, next) {
   next();
 });
 
+// 配置body-parser
+// parse application/x-www-form-urlencoded  
+app.use(bodyParser.urlencoded({ extended: false }))    
+// parse application/json  
+app.use(bodyParser.json())
+
 // 配置session
 app.use(session({
   secret: '123456',	// 默认密码
   resave: false,	// 重复保存
   saveUninitialized: true,
-  cookie: { secure: true }
+  cookie: { maxAge : 1000 * 60 * 60 * 24}
 }))
+
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

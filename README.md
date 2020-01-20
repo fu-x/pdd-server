@@ -1,6 +1,7 @@
 # pdd移动端商城项目开发-后端服务器
 
-> 本项目是基于Vue.js+express+MongoDB的全栈项目
+> 本项目是基于Vue.js+express+MySQL的全栈项目
+
 > [前端项目地址](https://github.com/fu-x/pdd)
 
 ## Build Setup
@@ -16,12 +17,24 @@ npm start
 ```
 
 ## 项目构建
-1. **使用`Express`应用生成器**
-2. **连接`MySQL`数据库**
-3. **将临时数据添加至数据库**
+> **使用`Express`应用生成器**
+
+## 第三方模块
+1. **`express-session`**: 使用`session`存储登录用户ID判断用户是否已经登陆，以及存储图形验证码信息，判断用户提交验证码是否正确。
+2. **`body-parser`**: 获取用户`POST`提交的数据。
+3. **`mysql`**: 连接MySQL数据库。
+4. **`svg-captcha`**: 生成图形验证码。
 
 ## 配置接口
-1. **首页轮播图接口**
-2. **推荐页面商品信息接口，并通过`get`请求实现分页查询**
-3. **借助第三方库`svg-captcha`和`express-session`实现图形验证码接口**
-4. **实现模拟短信验证码接口**
+api | 请求方式 | 参数 | 说明
+:-: | :-: | :-: | :-: | :-:
+/api/homecasual | get |  | 首页轮播图数据 | 
+/api/homenav | get |  | 首页导航数据 |
+/api/homeshoplist | get |  | 首页商品列表数据 |
+/api/searchgoods | get |  | 搜索分类列表数据 |
+/api/recommendshoplist | get |  | 推荐商品列表数据 |
+/api/captcha | get |  | 图形验证码数据 |
+/api/usercode | get | phone | 手机验证码数据 |
+/api/logincode | post | phone, code | 手机验证码登录 |
+/api/loginpwd | post | username, password, captcha | 账号密码登录 |
+/api/islogin | get |  | 判断是否已经登录 |
