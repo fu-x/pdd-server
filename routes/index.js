@@ -104,7 +104,15 @@ router.post('/api/logincode', (req, res)=>{
               else{ 
                 data = JSON.parse(JSON.stringify(results[0]));
                 req.session.userId = data.user_id;
-                res.json({status: 200, message:{id: data.user_id, name: data.user_name, phone: data.user_phone}});
+                res.json({status: 200, message: {
+                  id: results[0].user_id,
+                  phone: results[0].user_phone, 
+                  name: results[0].user_name, 
+                  sex: results[0].user_sex, 
+                  address: results[0].user_address, 
+                  birthday: results[0].user_birthday,
+                  signature: results[0].user_signature
+                }});
               }
             })
           }
@@ -137,7 +145,15 @@ router.post('/api/loginpwd', (req, res)=>{
           return;
         }
         req.session.userId = data.user_id;
-        res.json({status: 200, message:{id: data.user_id, name: data.user_name, phone: data.user_phone}});
+        res.json({status: 200, message: {
+          id: results[0].user_id,
+          phone: results[0].user_phone, 
+          name: results[0].user_name, 
+          sex: results[0].user_sex, 
+          address: results[0].user_address, 
+          birthday: results[0].user_birthday,
+          signature: results[0].user_signature
+        }});
       }else{
         res.json({status: 500, message:'用户名或密码错误。'});
       }
@@ -158,11 +174,42 @@ router.get('/api/islogin', (req, res)=>{
     else if(results[0]){  // 用户存在
       let data = JSON.parse(JSON.stringify(results[0]));
       req.session.userId = data.user_id;
-      res.json({status: 200, message:{id: data.user_id, name: data.user_name, phone: data.user_phone}});
+      res.json({status: 200, message: {
+        id: results[0].user_id,
+        phone: results[0].user_phone, 
+        name: results[0].user_name, 
+        sex: results[0].user_sex, 
+        address: results[0].user_address, 
+        birthday: results[0].user_birthday,
+        signature: results[0].user_signature
+      }});
     }else{
       delete req.session.user_id;
       res.json({status: 500, message:'请登录。'});
     }
   });
+})
+/*
+退出登陆
+*/
+router.get('/api/logout', (req, res)=>{
+  delete req.session.userId;
+  res.json({status: 200, message: '退出登陆成功。'});
+})
+/*
+修改个人信息
+*/
+router.post('/api/alterinfo', (req, res)=>{
+  let id = req.body.id || '';
+  let name = req.body.name || '';
+  let sex = req.body.sex || '';
+  let address = req.body.address || '';
+  let birthday = req.body.birthday || '';
+  let signature = req.body.signature || '';
+  let sqlStr = `update pdd_userinfo set user_name='${name}',user_sex='${sex}',user_address='${address}',user_birthday='${birthday}',user_signature='${signature}' where user_id=${id}`;
+  conn.query(sqlStr, (error, results, fields)=>{
+    if(error) res.json({status: 500, message: '服务器错误。'});
+    else res.json({status:200, message: '修改成功。'})
+  })
 })
 module.exports = router;
