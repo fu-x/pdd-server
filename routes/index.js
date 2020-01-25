@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
 */
 router.get('/api/homecasual', (req, res)=>{
   conn.query('select * from pdd_homecasual',(error, results, fields)=>{
-    if(error) res.json({status: 500, message:'服务器未响应。'});
+    if(error) res.json({status: 500, message:'服务器错误。'});
     else res.json({status: 200, message: results});
   })
 });
@@ -48,10 +48,10 @@ router.get('/api/recommendshoplist', (req, res)=>{
   let pageNo = parseInt(req.query.page) || 1;
   let pageSize = parseInt(req.query.count) || 20;
   conn.query(`select * from pdd_recommend limit ${(pageNo-1)*pageSize},${pageSize}`, (error, results, fields)=>{
-    if(error) res.json({status: 500, message:'服务器未响应。'});
+    if(error) res.json({status: 500, message:'服务器错误。'});
     else setTimeout(()=>{
       res.json({status: 200, message: results});
-    },1000)
+    },500)
   })
 });
 /*
@@ -90,17 +90,17 @@ router.post('/api/logincode', (req, res)=>{
   }else{  // 验证码正确
     delete userCode[phone];
     conn.query(`select * from pdd_userinfo where user_phone='${phone}';`, (error, results, fields)=>{
-      if(error) res.json({status: 500, message:'服务器未响应。'});
+      if(error) res.json({status: 500, message:'服务器错误。'});
       else if(results[0]){  // 用户已注册
         let data = JSON.parse(JSON.stringify(results[0]));
         req.session.userId = data.user_id;
         res.json({status: 200, message:{id: data.user_id, name: data.user_name, phone: data.user_phone}});
       }else{  // 新用户
         conn.query(`insert into pdd_userinfo(user_name,user_phone) values('${phone}','${phone}')`, (error, results, fields)=>{
-          if(error) res.json({status: 500, message:'服务器未响应。'});
+          if(error) res.json({status: 500, message:'服务器错误。'});
           else{
             conn.query(`select * from pdd_userinfo where user_phone='${phone}'`, (error, results, fields)=>{
-              if(error) res.json({status: 500, message:'服务器未响应。'});
+              if(error) res.json({status: 500, message:'服务器错误。'});
               else{ 
                 data = JSON.parse(JSON.stringify(results[0]));
                 req.session.userId = data.user_id;
@@ -137,7 +137,7 @@ router.post('/api/loginpwd', (req, res)=>{
     delete req.session.captcha;
     conn.query(`select * from pdd_userinfo where user_name='${username}' or user_phone= '${username}';`, (error, results, fields)=>{
       console.log(results);
-      if(error) res.json({status: 500, message:'服务器未响应。'});
+      if(error) res.json({status: 500, message:'服务器错误。'});
       else if(results[0]){  // 用户名存在
         let data = JSON.parse(JSON.stringify(results[0]));
         if(password !== data.user_pwd){
@@ -170,7 +170,7 @@ router.get('/api/islogin', (req, res)=>{
     return;
   }
   conn.query(`select * from pdd_userinfo where user_id=${userId};`, (error, results, fields)=>{
-    if(error) res.json({status: 500, message:'服务器未响应。'});
+    if(error) res.json({status: 500, message:'服务器错误。'});
     else if(results[0]){  // 用户存在
       let data = JSON.parse(JSON.stringify(results[0]));
       req.session.userId = data.user_id;
@@ -210,6 +210,49 @@ router.post('/api/alterinfo', (req, res)=>{
   conn.query(sqlStr, (error, results, fields)=>{
     if(error) res.json({status: 500, message: '服务器错误。'});
     else res.json({status:200, message: '修改成功。'})
+  })
+})
+/*
+添加购物车
+*/
+router.post('/api/addcart', (req, res)=>{
+  let user_id = req.session.userId;
+  let goods_id = req.body.goods_id;
+  let goods_name = req.body.goods_name;
+  let thumb_url = req.body.thumb_url;
+  let price = req.body.price;
+  let number = req.body.number;
+  let ispay = 0;
+  conn.query(`select * from pdd_cart where user_id=${user_id} and goods_id=${goods_id}`, (error, results, fields)=>{
+    console.log(111);
+    if(error) res.json({status: 500, message:'服务器错误。'});
+    else{
+      console.log(results);
+      if(!results[0]){  // 商品不存在购物车
+        let addStr = `insert into pdd_cart values(${user_id}, ${goods_id}, '${goods_name}', '${thumb_url}', ${price}, ${number}, ${ispay})`;
+        conn.query(addStr, (error, results, fields)=>{
+          console.log(222);
+          if(error) res.json({status: 500, message:'服务器错误。'});
+          else res.json({status: 200, message:'添加购物车成功'});
+        })
+      }else{  // 商品已经在购物车
+        number = ++results[0].number;
+        conn.query(`update pdd_cart set number=${number} where user_id=${user_id} and goods_id=${goods_id}`, (error, results, fields)=>{
+          if(error) throw error;
+          else res.json({status: 200, message:'添加购物车成功'});
+        })
+      }
+    }
+  })
+})
+/*
+获取购物车商品数据
+*/
+router.get('/api/cart', (req, res)=>{
+  let user_id = req.session.userId;
+  conn.query(`select * from pdd_cart where user_id=${user_id}`, (error, results, fields)=>{
+    if(error) res.json({status: 500, message:'服务器错误。'});
+    else res.json({status: 200, message: results});
   })
 })
 module.exports = router;

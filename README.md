@@ -26,17 +26,19 @@ npm start
 4. **`svg-captcha`**: 生成图形验证码。
 
 ## 配置接口
-|          api           | 请求方式 |            参数                           |       说明       |
-| :--------------------: | :------: | :---------------------------------------:| :--------------: |
-|    /api/homecasual     |   get    |                                          |  首页轮播图数据  |
-|      /api/homenav      |   get    |                                          |   首页导航数据   |
-|   /api/homeshoplist    |   get    |                                          | 首页商品列表数据 |
-|    /api/searchgoods    |   get    |                                          | 搜索分类列表数据 |
-| /api/recommendshoplist |   get    |                                          | 推荐商品列表数据 |
-|      /api/captcha      |   get    |                                          |  图形验证码数据  |
-|     /api/usercode      |   get    |                   phone                  |  手机验证码数据  |
-|     /api/logincode     |   post   |                phone, code               |  手机验证码登录  |
-|     /api/loginpwd      |   post   |       username, password, captcha        |   账号密码登录   |
-|      /api/islogin      |   get    |                                          | 判断是否已经登录 |
-|      /api/logout       |   get    |                                          |     退出登陆    |
-|      /api/alterinfo    |   post   |id, name, sex, address, birthday, signature|     退出登陆    |
+|          api           | 请求方式 |            参数                               |       说明      |
+| :--------------------: | :------: | :------------------------------------------: | :-------------: |
+|    /api/homecasual     |   get    |                                              |  首页轮播图数据  |
+|      /api/homenav      |   get    |                                              |   首页导航数据   |
+|   /api/homeshoplist    |   get    |                                              | 首页商品列表数据 |
+|    /api/searchgoods    |   get    |                                              | 搜索分类列表数据 |
+| /api/recommendshoplist |   get    |                                              | 推荐商品列表数据 |
+|      /api/captcha      |   get    |                                              |  图形验证码数据  |
+|     /api/usercode      |   get    |                     phone                    |  手机验证码数据  |
+|     /api/logincode     |   post   |                  phone, code                 |  手机验证码登录  |
+|     /api/loginpwd      |   post   |         username, password, captcha          |   账号密码登录   |
+|      /api/islogin      |   get    |                                              | 判断是否已经登录 |
+|      /api/logout       |   get    |                                              |     退出登陆    |
+|      /api/alterinfo    |   post   | id, name, sex, address, birthday, signature  |   更改个人信息   |
+|      /api/addcart      |   post   |goods_id, goods_name, thumb_url, price, number| 添加商品到购物车 |
+|      /api/cart         |   get    |                                              |获取购物车商品数据|
