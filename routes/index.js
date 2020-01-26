@@ -24,23 +24,46 @@ router.get('/api/homecasual', (req, res)=>{
  获取首页导航
 */
 router.get('/api/homenav', (req, res)=>{
-  const navJson = require('./../data/homenav');
-  res.json({status: 200, message: navJson.data});
+  conn.query('select * from pdd_homenav',(error, results, fields)=>{
+    if(error) res.json({status: 500, message:'服务器错误。'});
+    else res.json({status: 200, message: results});
+  })
 });
 /*
  获取首页商品列表
 */
 router.get('/api/homeshoplist', (req, res)=>{
-  const data = require('./../data/shopList');
-  res.json({status: 200, message: data});
+  conn.query('select * from pdd_goodslist',(error, results, fields)=>{
+    if(error) res.json({status: 500, message:'服务器错误。'});
+    else res.json({status: 200, message: results});
+  })
 });
 /*
  获取搜索分类列表
 */
 router.get('/api/searchgoods', (req, res)=>{
-  const data = require('./../data/search');
-  res.json({status: 200, message: data});
-});
+  conn.query('select distinct name from pdd_search',(error, result1, fields)=>{
+    if(error) res.json({status: 500, message:'服务器错误。'});
+    else {
+      data = JSON.parse(JSON.stringify(result1));
+      conn.query('select * from pdd_search',(error, result2, fields)=>{
+        if(error) res.json({status: 500, message:'服务器错误。'});
+        else{
+          data.forEach((item2, index2)=>{
+            data[index2].items = [];
+            result2.forEach((item1, index1)=>{
+              if(item1.name === item2.name){
+                data[index2].items.push({'icon':item1.icon, 'title':item1.title});
+              }
+            })
+            console.log(data[index2].items);
+          })
+          res.json({status: 200, message: data})
+        }
+      })
+    }
+  })
+})
 /* 
  获取推荐商品列表
 */
@@ -224,14 +247,11 @@ router.post('/api/addcart', (req, res)=>{
   let number = req.body.number;
   let ispay = 0;
   conn.query(`select * from pdd_cart where user_id=${user_id} and goods_id=${goods_id}`, (error, results, fields)=>{
-    console.log(111);
     if(error) res.json({status: 500, message:'服务器错误。'});
     else{
-      console.log(results);
       if(!results[0]){  // 商品不存在购物车
         let addStr = `insert into pdd_cart values(${user_id}, ${goods_id}, '${goods_name}', '${thumb_url}', ${price}, ${number}, ${ispay})`;
         conn.query(addStr, (error, results, fields)=>{
-          console.log(222);
           if(error) res.json({status: 500, message:'服务器错误。'});
           else res.json({status: 200, message:'添加购物车成功'});
         })
@@ -253,6 +273,42 @@ router.get('/api/cart', (req, res)=>{
   conn.query(`select * from pdd_cart where user_id=${user_id}`, (error, results, fields)=>{
     if(error) res.json({status: 500, message:'服务器错误。'});
     else res.json({status: 200, message: results});
+  })
+})
+/*
+更改购物车信息
+*/
+router.post('/api/alertcart', (req, res)=>{
+  let user_id = req.session.userId;
+  let cartGoods = req.body.cartgoods;
+  // console.log(cartGoods);
+  conn.query(`delete from pdd_cart where user_id=${user_id}`,(error, results, fields)=>{
+    if(error){
+      res.json({status: 500, message:'服务器错误。'});
+      return;
+    }
+  })
+  if(cartGoods === ''){
+    return;
+  }
+  let message = '';
+  let status = 0;
+  cartGoods.forEach((item, index)=>{
+    let addStr = `insert into pdd_cart values(${user_id}, ${item.goods_id}, '${item.goods_name}', '${item.thumb_url}', ${item.price}, ${item.number}, ${item.ispay})`;
+    conn.query(addStr, (error, results, fields)=>{
+      if(error){
+        message = '服务器错误。';
+        status = 500;
+      }
+      else{
+        status = 200; 
+        message = '修改成功';
+      }
+      console.log(status, message);
+      if(index === cartGoods.length-1){
+        res.json({status: status, message: message})
+      }
+    })
   })
 })
 module.exports = router;

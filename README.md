@@ -42,3 +42,4 @@ npm start
 |      /api/alterinfo    |   post   | id, name, sex, address, birthday, signature  |   更改个人信息   |
 |      /api/addcart      |   post   |goods_id, goods_name, thumb_url, price, number| 添加商品到购物车 |
 |      /api/cart         |   get    |                                              |获取购物车商品数据|
+|     /api/alertcart     |   post   |              {cartgoods}                     |修改购物车商品数据|

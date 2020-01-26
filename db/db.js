@@ -42,4 +42,32 @@ connection.connect();
 //     console.log('添加数据成功');
 //   });
 // })
+// 将首页导航数据插入到数据库
+// const data = require('../data/homenav.json');
+// console.log(data.data.item1);
+// data.data.item2.forEach(el => {
+//   connection.query(`insert into pdd_homenav value(null, '${el.iconurl}', '${el.icontitle}')`, (error, results, fields)=>{
+//     if(error) throw error;
+//     console.log('添加数据成功');
+//   });
+// })
+// 将首页商品信息插入到数据库
+// const data = require('../data/goods_list.json');
+// data.goods_list.forEach(el => {
+//   connection.query(`insert into pdd_recommend value(${el.goods_id},'${el.goods_name}','${el.short_name}','${el.image_url}','${el.thumb_url}','${el.hd_thumb_url}',${el.group.price},${el.normal_price},${el.market_price},'${el.sales_tip}')`, (error, results, fields)=>{
+//     if(error) throw error;
+//     console.log('添加数据成功');
+//   });
+// })
+// 将商品分类数据插入到数据库
+// const data = require('../data/search.json');
+// data.data.forEach(el => {
+//   let name = el.name;
+//   el.items.forEach((item, index)=>{
+//     connection.query(`insert into pdd_search value(null, '${name}', '${item.icon}', '${item.title}')`, (error, results, fields)=>{
+//       if(error) throw error;
+//       console.log('添加数据成功');
+//     });
+//   })
+// })
 module.exports = connection;
