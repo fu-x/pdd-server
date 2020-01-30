@@ -3,7 +3,7 @@
 > 本项目是基于Vue.js+express+MySQL的全栈项目
 
 > [前端项目地址](https://github.com/fu-x/pdd)
-
+> [项目演示地址](http://coolxiang.top/pdd)
 ## Build Setup
 
 ``` bash
