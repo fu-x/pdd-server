@@ -3,7 +3,9 @@
 > 本项目是基于Vue.js+express+MySQL的全栈项目
 
 > [前端项目地址](https://github.com/fu-x/pdd)
+
 > [项目演示地址](http://coolxiang.top/pdd)
+> 本项目为移动端项目，pc端演示请在开发者模式中调至移动设备模式
 ## Build Setup
 
 ``` bash
