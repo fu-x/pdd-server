@@ -311,4 +311,29 @@ router.post('/api/alertcart', (req, res)=>{
     })
   })
 })
+/*
+修改密码
+*/
+router.post('/api/cipher', (req, res)=>{
+  let user_id = req.session.userId; 
+  let oldCipher = req.body.oldCipher;
+  let newCipher = req.body.newCipher;
+  
+  conn.query(`select * from pdd_userinfo where user_id=${user_id};`, (error, results, fields)=>{
+    if(error) res.json({status: 500, message: '服务器错误。'});
+    else{
+      console.log(oldCipher, results[0].user_pwd);
+      if(oldCipher !== results[0].user_pwd){
+        res.json({status: 500, message: '旧密码不正确。'});
+      }else{
+        conn.query(`update pdd_userinfo set user_pwd='${newCipher}' where user_id=${user_id};`, (error, results, fields)=>{
+          console.log(111);
+          
+          if(error) res.json({status: 500, message: '服务器错误。'});
+          else res.json({status: 200, message: '密码修改成功。'})
+        });
+      }
+    }
+  })
+})
 module.exports = router;
